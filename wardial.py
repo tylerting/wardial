@@ -227,7 +227,15 @@ def wardial(hosts, **kwargs):
     # and use this event loop to call the `_wardial_async` function.
     # Ensure that all of the kwargs parameters get passed to `_wardial_async`.
     # You will have to do some post-processing of the results of this function to convert the output.
-    return []
+    empty = []
+    loop = asyncio.new_event_loop()
+    xs = loop.run_until_complete(_wardial_async(hosts, **kwargs))
+    for i, x in enumerate(xs):
+        if x:
+            empty.append(hosts[i])
+    loop.close()
+    return empty
+
 
 if __name__=='__main__':
 
